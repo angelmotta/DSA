@@ -16,13 +16,22 @@ class DoublyLinkedList:
             self.head = node
             self.tail = node
             return
-        # Case: stand-alone node
-        if (node.next == None and node.prev == None):
-            initialHead = self.head
-            node.next = initialHead
-            self.head = node
-            initialHead.prev = node
-        # TODO: Case existing node
+        # Case: existing node
+        if node.prev != None or node.next != None:
+            prevNode = node.prev
+            nextNode = node.next
+            prevNode.next = nextNode
+            if nextNode != None:
+                nextNode.prev = prevNode
+            else:
+                self.tail = prevNode
+            # Make node stand-alone
+            node.prev = None
+            node.next = None
+        # Default case: stand-alone node
+        self.head.prev = node
+        node.next = self.head
+        self.head = node
 
     def setTail(self, node):
         pass
@@ -46,6 +55,7 @@ class DoublyLinkedList:
         pass
 
     def traverseForward(self):
+        print("traverseForward:")
         node = self.head
         while(node != None):
             print(node.value)
@@ -53,6 +63,7 @@ class DoublyLinkedList:
         print("")
 
     def traverseBackward(self):
+        print("traverseBackward:")
         node = self.tail
         while(node != None):
             print(node.value)
@@ -72,5 +83,9 @@ if __name__ == '__main__':
     mylist.setHead(node2)
     mylist.setHead(node1)
 
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    mylist.setHead(node2)
     mylist.traverseForward()
     mylist.traverseBackward()

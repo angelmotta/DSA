@@ -10,6 +10,19 @@ class DoublyLinkedList:
         self.head = None
         self.tail = None
 
+    def utilExtractNode(self, node):
+        prevNode = node.prev
+        nextNode = node.next
+        prevNode.next = nextNode
+        if nextNode != None:
+            nextNode.prev = prevNode
+        else:
+            self.tail = prevNode
+        # Make node stand-alone
+        node.prev = None
+        node.next = None
+        return node
+
     def setHead(self, node):
         # Base case
         if self.head == None:
@@ -18,16 +31,7 @@ class DoublyLinkedList:
             return
         # Case: existing node
         if node.prev != None or node.next != None:
-            prevNode = node.prev
-            nextNode = node.next
-            prevNode.next = nextNode
-            if nextNode != None:
-                nextNode.prev = prevNode
-            else:
-                self.tail = prevNode
-            # Make node stand-alone
-            node.prev = None
-            node.next = None
+            node = self.utilExtractNode(node)
         # Default case: stand-alone node
         self.head.prev = node
         node.next = self.head
@@ -58,7 +62,9 @@ class DoublyLinkedList:
         print("traverseForward:")
         node = self.head
         while(node != None):
-            print(node.value)
+            print("<- ", end="")
+            print(node.value, end="")
+            print(" -> ", end="")
             node = node.next
         print("")
 
@@ -66,7 +72,9 @@ class DoublyLinkedList:
         print("traverseBackward:")
         node = self.tail
         while(node != None):
-            print(node.value)
+            print("<- ", end="")
+            print(node.value, end="")
+            print(" -> ", end="")
             node = node.prev
         print("")
 

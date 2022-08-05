@@ -38,7 +38,18 @@ class DoublyLinkedList:
         self.head = node
 
     def setTail(self, node):
-        pass
+        # Base case
+        if self.tail == None:
+            self.tail = node
+            self.head = node
+            return
+        # Case existing node
+        if node.prev != None or node.next != None:
+            node = self.utilExtractNode(node)
+        # Default case: stand-alone node
+        self.tail.next = node
+        node.prev = self.tail
+        self.tail = node
 
     def insertBefore(self, node, nodeToInsert):
         pass
@@ -87,13 +98,13 @@ if __name__ == '__main__':
     node2 = Node(2)
     node1 = Node(1)
 
-    mylist.setHead(node3)
-    mylist.setHead(node2)
-    mylist.setHead(node1)
+    mylist.setTail(node3)
+    mylist.setTail(node2)
+    mylist.setTail(node1)
 
     mylist.traverseForward()
     mylist.traverseBackward()
 
-    mylist.setHead(node2)
+    mylist.setTail(node2)
     mylist.traverseForward()
     mylist.traverseBackward()

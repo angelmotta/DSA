@@ -52,10 +52,53 @@ class DoublyLinkedList:
         self.tail = node
 
     def insertBefore(self, node, nodeToInsert):
-        pass
+        # Case: Insert Existing node (Move node)
+        if (nodeToInsert.prev != None or nodeToInsert.next != None):
+            nodeToInsert = self.utilExtractNode(nodeToInsert)
+        # Case: Insert new stand-alone node
+        # Sub-Case: node is Head
+        if self.head == node:
+            nodeToInsert.next = node
+            node.prev = nodeToInsert
+            self.head = nodeToInsert
+        # Other-Case: list.length >= 2
+        else:
+            runnerNode = self.head
+            while runnerNode.next != node:
+                if runnerNode.next == None:
+                    # Case: reached end of List and node does not exist in LinkedList
+                    return
+                runnerNode = runnerNode.next
+
+            # Insert node
+            nodeToInsert.prev = runnerNode
+            nodeToInsert.next = runnerNode.next
+            runnerNode.next.prev = nodeToInsert
+            runnerNode.next = nodeToInsert
 
     def insertAfter(self, node, nodeToInsert):
-        pass
+        # Case: Insert Existing node (Move node)
+        if (nodeToInsert.prev != None or nodeToInsert.next != None):
+            nodeToInsert = self.utilExtractNode(nodeToInsert)
+        # Insert stand-alone node
+        # Case I: nodeAfter is tail
+        if node == self.tail:
+            self.tail.next = nodeToInsert
+            nodeToInsert.prev = self.tail
+            self.tail = nodeToInsert
+        else:
+            # Case II: nodeAfter is any node of Linked List
+            runnerNode = self.head
+            while runnerNode != node:
+                if runnerNode.next == None:
+                    return
+                runnerNode = runnerNode.next
+            # Insert Node
+            nodeToInsert.prev = runnerNode
+            nodeToInsert.next = runnerNode.next
+            if runnerNode.next != None:
+                runnerNode.next.prev = nodeToInsert
+            runnerNode.next = nodeToInsert
 
     def insertAtPosition(self, position, nodeToInsert):
         pass
@@ -94,17 +137,22 @@ class DoublyLinkedList:
 if __name__ == '__main__':
     mylist = DoublyLinkedList()
 
+    node4 = Node(4)
     node3 = Node(3)
     node2 = Node(2)
     node1 = Node(1)
 
-    mylist.setTail(node3)
-    mylist.setTail(node2)
     mylist.setTail(node1)
+    mylist.setTail(node2)
+    mylist.setTail(node3)
+    mylist.setTail(node4)
 
     mylist.traverseForward()
     mylist.traverseBackward()
 
-    mylist.setTail(node2)
+    node5 = Node(5)
+    node6 = Node(6)
+
+    mylist.insertAfter(node2, node5)
     mylist.traverseForward()
     mylist.traverseBackward()

@@ -101,7 +101,29 @@ class DoublyLinkedList:
             runnerNode.next = nodeToInsert
 
     def insertAtPosition(self, position, nodeToInsert):
-        pass
+        # Observation: this method could only change the head (not the tail)
+        # Case insert existing Node
+        if (nodeToInsert.prev != None or nodeToInsert.next != None):
+            nodeToInsert = self.utilExtractNode(nodeToInsert)
+        # Case: stand-alone Node
+        # Base case: Head
+        if position == 1:
+            nodeToInsert.next = self.head
+            self.head.prev = nodeToInsert
+            self.head = nodeToInsert
+        else:
+            runnerNode = self.head
+            idx = 1
+            while (idx < position - 1):
+                idx += 1
+                if runnerNode.next == None:
+                    return  # position input is longer than list.length
+                runnerNode = runnerNode.next
+            # Insert Node
+            nodeToInsert.prev = runnerNode
+            nodeToInsert.next = runnerNode.next
+            runnerNode.next.prev = nodeToInsert  # 'runnerNode.next' is always != Null
+            runnerNode.next = nodeToInsert
 
     def removeNodesWithValue(self, value):
         pass
@@ -154,5 +176,9 @@ if __name__ == '__main__':
     node6 = Node(6)
 
     mylist.insertAfter(node2, node5)
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    mylist.insertAtPosition(2, node6)
     mylist.traverseForward()
     mylist.traverseBackward()

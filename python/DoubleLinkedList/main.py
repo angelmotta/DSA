@@ -126,7 +126,12 @@ class DoublyLinkedList:
             runnerNode.next = nodeToInsert
 
     def removeNodesWithValue(self, value):
-        pass
+        runner = self.head
+        while (runner != None):
+            nextNode = runner.next  # Potentially None
+            if runner.value == value:
+                _ = self.utilExtractNode(runner)
+            runner = nextNode
 
     def remove(self, node):
         pass
@@ -180,5 +185,18 @@ if __name__ == '__main__':
     mylist.traverseBackward()
 
     mylist.insertAtPosition(2, node6)
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    node6_2 = Node(6)
+    mylist.setTail(node6_2)
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    mylist.removeNodesWithValue(4)
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    mylist.removeNodesWithValue(6)
     mylist.traverseForward()
     mylist.traverseBackward()

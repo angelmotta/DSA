@@ -13,12 +13,19 @@ class DoublyLinkedList:
     def utilExtractNode(self, node):
         prevNode = node.prev
         nextNode = node.next
-        prevNode.next = nextNode
-        if nextNode != None:
+        # Check potential case of Head
+        if prevNode != None:  # Node is Not Head
+            prevNode.next = nextNode
+        else:  # Node is Head
+            self.head = nextNode
+
+        # Check: potential case of Tail
+        if nextNode != None:  # Node is Not Tail
             nextNode.prev = prevNode
-        else:
+        else:  # Node is Tail
             self.tail = prevNode
-        # Make node stand-alone
+
+        # Make original node stand-alone
         node.prev = None
         node.next = None
         return node
@@ -134,10 +141,14 @@ class DoublyLinkedList:
             runner = nextNode
 
     def remove(self, node):
-        pass
+        _ = self.utilExtractNode(node)
 
     def containsNodeWithValue(self, value):
-        pass
+        runner = self.head
+        while (runner != None):
+            if runner.value == value:
+                return True
+        return False
 
     def traverseForward(self):
         print("traverseForward:")
@@ -198,5 +209,9 @@ if __name__ == '__main__':
     mylist.traverseBackward()
 
     mylist.removeNodesWithValue(6)
+    mylist.traverseForward()
+    mylist.traverseBackward()
+
+    mylist.remove(node1)
     mylist.traverseForward()
     mylist.traverseBackward()

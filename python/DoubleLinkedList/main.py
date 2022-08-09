@@ -108,29 +108,24 @@ class DoublyLinkedList:
             runnerNode.next = nodeToInsert
 
     def insertAtPosition(self, position, nodeToInsert):
-        # Observation: this method could only change the head (not the tail)
-        # Case insert existing Node
-        if (nodeToInsert.prev != None or nodeToInsert.next != None):
-            nodeToInsert = self.utilExtractNode(nodeToInsert)
-        # Case: stand-alone Node
-        # Base case: Head
+        # Observation 1: this method could change head or tail
+        # Observation 2: Order matters, to re-insert existing nodes check before neighbours node before extract nodeToInsert
         if position == 1:
-            nodeToInsert.next = self.head
-            self.head.prev = nodeToInsert
-            self.head = nodeToInsert
-        else:
-            runnerNode = self.head
-            idx = 1
-            while (idx < position - 1):
-                idx += 1
-                if runnerNode.next == None:
-                    return  # position input is longer than list.length
-                runnerNode = runnerNode.next
-            # Insert Node
-            nodeToInsert.prev = runnerNode
-            nodeToInsert.next = runnerNode.next
-            runnerNode.next.prev = nodeToInsert  # 'runnerNode.next' is always != Null
-            runnerNode.next = nodeToInsert
+            self.setHead(nodeToInsert)
+            return
+
+        idx = 1
+        runnerNode = self.head
+        while (idx != position or runnerNode != None):
+            runnerNode = runnerNode.next
+            idx += 1
+
+        if runnerNode == None:
+            self.setTail(nodeToInsert)
+            return
+
+        # Insert other position
+        self.insertBefore(runnerNode, nodeToInsert)
 
     def removeNodesWithValue(self, value):
         runner = self.head
@@ -148,6 +143,7 @@ class DoublyLinkedList:
         while (runner != None):
             if runner.value == value:
                 return True
+            runner = runner.next
         return False
 
     def traverseForward(self):
@@ -175,43 +171,47 @@ class DoublyLinkedList:
 if __name__ == '__main__':
     mylist = DoublyLinkedList()
 
-    node4 = Node(4)
-    node3 = Node(3)
-    node2 = Node(2)
     node1 = Node(1)
-
-    mylist.setTail(node1)
-    mylist.setTail(node2)
-    mylist.setTail(node3)
-    mylist.setTail(node4)
-
-    mylist.traverseForward()
-    mylist.traverseBackward()
-
+    node2 = Node(2)
+    node3 = Node(3)
+    node4 = Node(4)
     node5 = Node(5)
     node6 = Node(6)
+    node7 = Node(7)
 
-    mylist.insertAfter(node2, node5)
-    mylist.traverseForward()
-    mylist.traverseBackward()
+    mylist.setHead(node1)
+    mylist.insertAfter(node1, node2)
+    mylist.insertAfter(node2, node3)
+    mylist.insertAfter(node3, node4)
+    mylist.insertAfter(node4, node5)
+    mylist.insertAfter(node5, node6)
+    mylist.insertAfter(node6, node7)
 
-    mylist.insertAtPosition(2, node6)
     mylist.traverseForward()
-    mylist.traverseBackward()
+    print("-------")
+    mylist.insertAtPosition(7, node1)
+    mylist.traverseForward()
 
-    node6_2 = Node(6)
-    mylist.setTail(node6_2)
+    print("-------")
+    mylist.insertAtPosition(1, node1)
     mylist.traverseForward()
-    mylist.traverseBackward()
 
-    mylist.removeNodesWithValue(4)
+    print("-------")
+    mylist.insertAtPosition(2, node1)
     mylist.traverseForward()
-    mylist.traverseBackward()
 
-    mylist.removeNodesWithValue(6)
+    print("-------")
+    mylist.insertAtPosition(3, node1)
     mylist.traverseForward()
-    mylist.traverseBackward()
 
-    mylist.remove(node1)
+    print("-------")
+    mylist.insertAtPosition(4, node1)
     mylist.traverseForward()
-    mylist.traverseBackward()
+
+    print("-------")
+    mylist.insertAtPosition(5, node1)
+    mylist.traverseForward()
+
+    print("-------")
+    mylist.insertAtPosition(6, node1)
+    mylist.traverseForward()

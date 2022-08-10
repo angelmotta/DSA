@@ -10,7 +10,107 @@ class DoublyLinkedList:
         self.head = None
         self.tail = None
 
-    def utilExtractNode(self, node):
+    # Time O(1) | Space(1)
+    def setHead(self, node):
+        # Base case
+        if self.head == None:
+            self.head = node
+            self.tail = node
+            return
+        # Case: existing node
+        if node.prev != None or node.next != None:
+            self.remove(node)
+        # Default case: stand-alone node
+        self.head.prev = node
+        node.next = self.head
+        self.head = node
+
+    # Time O(1) | Space(1)
+    def setTail(self, node):
+        # Base case
+        if self.tail == None:
+            self.tail = node
+            self.head = node
+            return
+        # Case existing node
+        if node.prev != None or node.next != None:
+            self.remove(node)
+        # Default case: stand-alone node
+        self.tail.next = node
+        node.prev = self.tail
+        self.tail = node
+
+    # Time O(1) | Space O(1)
+    def insertBefore(self, node, nodeToInsert):
+        # Case: Insert Existing node (Move node)
+        if (nodeToInsert.prev != None or nodeToInsert.next != None):
+            self.remove(nodeToInsert)
+        # Case: Insert new stand-alone node
+        # Sub-Case: node is Head
+        if self.head == node:
+            nodeToInsert.next = node
+            node.prev = nodeToInsert
+            self.head = nodeToInsert
+        # Other-Case: list.length >= 2
+        else:
+            # Insert node
+            nodeToInsert.prev = node.prev
+            nodeToInsert.next = node
+            node.prev.next = nodeToInsert   # At this point node.prev is always != null
+            node.prev = nodeToInsert
+
+    # Time O(1) | Space O(1)
+    def insertAfter(self, node, nodeToInsert):
+        # Case: Insert Existing node (Move node)
+        if (nodeToInsert.prev != None or nodeToInsert.next != None):
+            self.remove(nodeToInsert)
+        # Insert stand-alone node
+        # Case I: node is tail
+        if node == self.tail:
+            self.tail.next = nodeToInsert
+            nodeToInsert.prev = self.tail
+            self.tail = nodeToInsert
+        else:
+            # Case II: node is any position of Linked List
+            nodeToInsert.prev = node
+            nodeToInsert.next = node.next
+            if node.next != None:
+                node.next.prev = nodeToInsert
+            node.next = nodeToInsert
+
+    # Time O(n) | Space O(1)
+    def insertAtPosition(self, position, nodeToInsert):
+        # Observation 1: this method could change head or tail
+        # Observation 2: Order matters, to re-insert existing nodes check before neighbours node before extract nodeToInsert
+        if position == 1:
+            self.setHead(nodeToInsert)
+            return
+
+        idx = 1
+        runnerNode = self.head
+        # Time worst case: O(n)
+        while (idx != position and runnerNode != None):
+            runnerNode = runnerNode.next
+            idx += 1
+
+        if runnerNode == None:
+            self.setTail(nodeToInsert)
+            return
+
+        # Insert in other position:  O(1)
+        self.insertBefore(runnerNode, nodeToInsert)
+
+    # Time O(n) | Space O(1)
+    def removeNodesWithValue(self, value):
+        runner = self.head
+        while (runner != None):
+            nextNode = runner.next  # Potentially None
+            if runner.value == value:
+                self.remove(runner)
+            runner = nextNode
+
+    # Time O(1) | Space I(1)
+    def remove(self, node):
         prevNode = node.prev
         nextNode = node.next
         # Check potential case of Head
@@ -28,116 +128,8 @@ class DoublyLinkedList:
         # Make original node stand-alone
         node.prev = None
         node.next = None
-        return node
 
-    def setHead(self, node):
-        # Base case
-        if self.head == None:
-            self.head = node
-            self.tail = node
-            return
-        # Case: existing node
-        if node.prev != None or node.next != None:
-            node = self.utilExtractNode(node)
-        # Default case: stand-alone node
-        self.head.prev = node
-        node.next = self.head
-        self.head = node
-
-    def setTail(self, node):
-        # Base case
-        if self.tail == None:
-            self.tail = node
-            self.head = node
-            return
-        # Case existing node
-        if node.prev != None or node.next != None:
-            node = self.utilExtractNode(node)
-        # Default case: stand-alone node
-        self.tail.next = node
-        node.prev = self.tail
-        self.tail = node
-
-    def insertBefore(self, node, nodeToInsert):
-        # Case: Insert Existing node (Move node)
-        if (nodeToInsert.prev != None or nodeToInsert.next != None):
-            nodeToInsert = self.utilExtractNode(nodeToInsert)
-        # Case: Insert new stand-alone node
-        # Sub-Case: node is Head
-        if self.head == node:
-            nodeToInsert.next = node
-            node.prev = nodeToInsert
-            self.head = nodeToInsert
-        # Other-Case: list.length >= 2
-        else:
-            runnerNode = self.head
-            while runnerNode.next != node:
-                if runnerNode.next == None:
-                    # Case: reached end of List and node does not exist in LinkedList
-                    return
-                runnerNode = runnerNode.next
-
-            # Insert node
-            nodeToInsert.prev = runnerNode
-            nodeToInsert.next = runnerNode.next
-            runnerNode.next.prev = nodeToInsert
-            runnerNode.next = nodeToInsert
-
-    def insertAfter(self, node, nodeToInsert):
-        # Case: Insert Existing node (Move node)
-        if (nodeToInsert.prev != None or nodeToInsert.next != None):
-            nodeToInsert = self.utilExtractNode(nodeToInsert)
-        # Insert stand-alone node
-        # Case I: nodeAfter is tail
-        if node == self.tail:
-            self.tail.next = nodeToInsert
-            nodeToInsert.prev = self.tail
-            self.tail = nodeToInsert
-        else:
-            # Case II: nodeAfter is any node of Linked List
-            runnerNode = self.head
-            while runnerNode != node:
-                if runnerNode.next == None:
-                    return
-                runnerNode = runnerNode.next
-            # Insert Node
-            nodeToInsert.prev = runnerNode
-            nodeToInsert.next = runnerNode.next
-            if runnerNode.next != None:
-                runnerNode.next.prev = nodeToInsert
-            runnerNode.next = nodeToInsert
-
-    def insertAtPosition(self, position, nodeToInsert):
-        # Observation 1: this method could change head or tail
-        # Observation 2: Order matters, to re-insert existing nodes check before neighbours node before extract nodeToInsert
-        if position == 1:
-            self.setHead(nodeToInsert)
-            return
-
-        idx = 1
-        runnerNode = self.head
-        while (idx != position or runnerNode != None):
-            runnerNode = runnerNode.next
-            idx += 1
-
-        if runnerNode == None:
-            self.setTail(nodeToInsert)
-            return
-
-        # Insert other position
-        self.insertBefore(runnerNode, nodeToInsert)
-
-    def removeNodesWithValue(self, value):
-        runner = self.head
-        while (runner != None):
-            nextNode = runner.next  # Potentially None
-            if runner.value == value:
-                _ = self.utilExtractNode(runner)
-            runner = nextNode
-
-    def remove(self, node):
-        _ = self.utilExtractNode(node)
-
+    # Time O(n) | Space O(1)
     def containsNodeWithValue(self, value):
         runner = self.head
         while (runner != None):
